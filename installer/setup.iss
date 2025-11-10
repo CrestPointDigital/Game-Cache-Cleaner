@@ -15,6 +15,11 @@ WizardStyle=modern
 ArchitecturesInstallIn64BitMode=x64
 OutputDir=..
 OutputBaseFilename=GameCacheCleaner_Setup
+Compression=lzma2
+SolidCompression=yes
+UninstallDisplayIcon={app}\GameCacheCleaner.UI.exe
+VersionInfoProductName=Game Cache Cleaner
+VersionInfoCompany=CrestPoint Digital
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -23,8 +28,8 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "Create a &desktop shortcut"; GroupDescription: "Additional icons:"; Flags: unchecked
 
 [Files]
-; Use the published single-file exe if available; otherwise use Release build exe
-Source: "..\\GameCacheCleaner_UI_Release\\GameCacheCleaner.UI.exe"; DestDir: "{app}"; Flags: ignoreversion
+; Use the published single-file exe as built by publish_selfcontained.ps1
+Source: "..\\GameCacheCleaner.UI\\bin\\Release\\net8.0-windows\\win-x64\\publish\\GameCacheCleaner.UI.exe"; DestDir: "{app}"; Flags: ignoreversion
 ; Include the icon so tray/window can load it from Assets
 Source: "..\\GameCacheCleaner.UI\\Assets\\crestpoint.ico"; DestDir: "{app}\\Assets"; Flags: ignoreversion
 

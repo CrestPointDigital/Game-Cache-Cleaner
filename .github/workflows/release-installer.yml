@@ -32,9 +32,9 @@ jobs:
           "C:\\Program Files (x86)\\Inno Setup 6\\ISCC.exe" installer\\setup.iss
 
       - name: Upload installer to Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: GameCacheCleaner_Setup.exe
+          generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
