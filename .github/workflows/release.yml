@@ -1,0 +1,46 @@
+name: Build & Attach Installer (Windows)
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Publish app (self-contained, folder)
+        shell: pwsh
+        run: >
+          dotnet publish .\GameCacheCleaner.UI\GameCacheCleaner.UI.csproj
+          -c Release -r win-x64
+          -p:PublishSingleFile=false
+          -p:SelfContained=true
+
+      - name: Install Inno Setup
+        run: choco install innosetup --yes
+
+      - name: Bump installer version to tag
+        shell: pwsh
+        run: |
+          $tag = "${{ github.ref_name }}"
+          (Get-Content .\installer\GameCacheCleaner.iss) `
+            -replace 'MyAppVersion "[^"]*"', ('MyAppVersion "' + $tag.TrimStart("v") + '"') `
+            | Set-Content .\installer\GameCacheCleaner.iss
+
+      - name: Build installer
+        run: '"C:\\Program Files (x86)\\Inno Setup 6\\ISCC.exe" .\\installer\\GameCacheCleaner.iss'
+
+      - name: Attach to Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: GameCacheCleaner_Setup_v*.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
