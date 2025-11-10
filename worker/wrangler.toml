@@ -1,0 +1,13 @@
+name = "license-worker"
+main = "worker/index.js"
+compatibility_date = "2024-10-01"
+
+kv_namespaces = [
+  { binding = "LICENSES", id = "REPLACE_WITH_YOUR_KV_ID" }
+]
+
+# Uncomment to deploy to your custom domain
+# routes = [
+#   { pattern = "license-worker.example.com/*", zone_id = "REPLACE_WITH_ZONE_ID" }
+# ]
+

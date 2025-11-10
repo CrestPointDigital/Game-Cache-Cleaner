@@ -6,9 +6,9 @@ namespace GameCacheCleaner.UI
 {
     public static class LicenseService
     {
-        // TODO: replace with your Stripe/Worker public key (ES256) when ready
-        private const string PublicKeyPem = @"-----BEGIN PUBLIC KEY-----
-...your ES256 public key here...
+        // Public key used to verify license tokens (ES256). Prefer reading from Assets/public.pem.
+        private const string PublicKeyPemFallback = @"-----BEGIN PUBLIC KEY-----
+...paste-your-ES256-public-key-here...
 -----END PUBLIC KEY-----";
 
         private static string LocalApp => Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
@@ -23,7 +23,8 @@ namespace GameCacheCleaner.UI
                 {
                     if (!File.Exists(LicensePath)) return false;
                     var token = File.ReadAllText(LicensePath).Trim(); // payloadBase64Url + "." + sigBase64Url
-                    return VerifyToken(token);
+                    var pub = GetPublicKeyPem();
+                    return VerifyToken(token, pub);
                 }
                 catch { return false; }
             }
@@ -33,13 +34,27 @@ namespace GameCacheCleaner.UI
 
         public static bool Activate(string token)
         {
-            if (!VerifyToken(token)) return false;
+            var pub = GetPublicKeyPem();
+            if (!VerifyToken(token, pub)) return false;
             Directory.CreateDirectory(Path.GetDirectoryName(LicensePath)!);
             File.WriteAllText(LicensePath, token);
             return true;
         }
 
-        private static bool VerifyToken(string token)
+        public static string PaymentLinkUrl { get; } = "https://buy.stripe.com/test_REPLACE_WITH_LINK"; // TODO: replace with your Stripe Payment Link (TEST/live)
+
+        private static string GetPublicKeyPem()
+        {
+            try
+            {
+                var path = Path.Combine(AppContext.BaseDirectory, "Assets", "public.pem");
+                if (File.Exists(path)) return File.ReadAllText(path);
+            }
+            catch { }
+            return PublicKeyPemFallback;
+        }
+
+        private static bool VerifyToken(string token, string publicKeyPem)
         {
             // Token format: base64url(payload) + "." + base64url(derSignature)
             var parts = token.Split('.');
@@ -48,8 +63,17 @@ namespace GameCacheCleaner.UI
             byte[] sig = FromB64Url(parts[1]);
 
             using var ecdsa = ECDsa.Create();
-            ecdsa.ImportFromPem(PublicKeyPem);
-            return ecdsa.VerifyData(payload, sig, HashAlgorithmName.SHA256);
+            ecdsa.ImportFromPem(publicKeyPem);
+            var ok = ecdsa.VerifyData(payload, sig, HashAlgorithmName.SHA256);
+            if (!ok) return false;
+            // Optional: validate payload fields (product, issuedAt)
+            try
+            {
+                var json = System.Text.Encoding.UTF8.GetString(payload);
+                if (json.Contains("\"product\":\"gcc-pro\"")) return true;
+                return false;
+            }
+            catch { return false; }
         }
 
         private static byte[] FromB64Url(string s)

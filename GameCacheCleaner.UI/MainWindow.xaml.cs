@@ -72,6 +72,7 @@ namespace GameCacheCleaner.UI
             // FREE stays enabled: AnalyzeBtn, CleanBtn, DryRunChk, ExcludeTxt, BreakdownBtn, ExportBtn (txt)
             if (ScheduleChk != null) ScheduleChk.IsEnabled = IsPro;
             if (AggressiveScanChk != null) AggressiveScanChk.IsEnabled = IsPro; // Cross-drive / deeper scans gated
+            if (HideToTrayBtn != null) HideToTrayBtn.IsEnabled = IsPro; // Tray autostart/behavior gated
             // No trial messaging; Pro is enabled only when licensed.
         }
 
@@ -87,10 +88,16 @@ namespace GameCacheCleaner.UI
             {
                 try
                 {
-                    Process.Start(new ProcessStartInfo("https://your-buy-url.example") { UseShellExecute = true });
+                    Process.Start(new ProcessStartInfo(LicenseService.PaymentLinkUrl) { UseShellExecute = true });
                 }
                 catch { }
             }
+        }
+
+        private void BuyProBtn_Click(object sender, RoutedEventArgs e)
+        {
+            try { Process.Start(new ProcessStartInfo(LicenseService.PaymentLinkUrl) { UseShellExecute = true }); }
+            catch { }
         }
 
         private void PopulateRoots()
