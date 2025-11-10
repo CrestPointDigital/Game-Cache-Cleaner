@@ -1,0 +1,40 @@
+name: Release Windows Installer
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8.x
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore & Publish single-file EXE
+        run: |
+          dotnet restore
+          dotnet publish GameCacheCleaner.UI/GameCacheCleaner.UI.csproj -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
+
+      - name: Install Inno Setup (via Chocolatey)
+        run: |
+          choco install innosetup -y
+
+      - name: Compile installer (Inno Setup)
+        run: |
+          "C:\\Program Files (x86)\\Inno Setup 6\\ISCC.exe" installer\\setup.iss
+
+      - name: Upload installer to Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: GameCacheCleaner_Setup.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
