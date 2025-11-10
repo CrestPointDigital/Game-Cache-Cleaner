@@ -1,0 +1,22 @@
+## OS junk
+Thumbs.db
+.DS_Store
+
+## IDE
+.vscode/
+*.sln.DotSettings
+
+## .NET build output
+bin/
+obj/
+
+## Publish and release artifacts
+GameCacheCleaner.UI/bin/
+GameCacheCleaner.UI/obj/
+GameCacheCleaner_UI_Release/
+GameCacheCleaner_UI_Release.zip
+
+## Installer temp/logs
+installer/*.tmp
+publish_selfcontained.ps1.log
+
