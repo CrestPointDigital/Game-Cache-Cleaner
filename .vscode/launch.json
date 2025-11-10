@@ -1,0 +1,16 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run GameCacheCleaner.UI",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "/mnt/data/GCC_fresh/GameCacheCleaner.UI/bin/Debug/net8.0-windows/GameCacheCleaner.UI.exe",
+      "args": [],
+      "cwd": "/mnt/data/GCC_fresh/GameCacheCleaner.UI",
+      "stopAtEntry": false,
+      "console": "internalConsole"
+    }
+  ]
+}

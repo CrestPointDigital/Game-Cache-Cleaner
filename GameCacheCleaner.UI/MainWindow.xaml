@@ -1,0 +1,69 @@
+<Window x:Class="GameCacheCleaner.UI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Game Cache Cleaner — CrestPoint Digital"
+        Icon="Assets/crestpoint.ico"
+        Height="560" Width="900"
+        WindowStartupLocation="CenterScreen">
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Top controls -->
+        <StackPanel Orientation="Horizontal">
+            <Button Name="AnalyzeBtn" Padding="10,6" Margin="0,0,8,0" Click="AnalyzeBtn_Click">Analyze</Button>
+            <Button Name="CleanBtn" Padding="10,6" Margin="0,0,8,0" Click="CleanBtn_Click">Clean</Button>
+            <CheckBox Name="DryRunChk" Content="Dry run (no delete)" Margin="8,0,8,0"/>
+            <CheckBox Name="AggressiveScanChk" Content="Aggressive scan (2-level, all drives)" Margin="8,0,8,0"
+                      Checked="AggressiveScanChk_Checked" Unchecked="AggressiveScanChk_Unchecked"/>
+            <TextBlock Text="Scan depth:" VerticalAlignment="Center" Margin="8,0,4,0"/>
+            <ComboBox Name="ScanDepthCmb" Width="60" SelectedIndex="0" SelectionChanged="ScanDepthCmb_SelectionChanged" Margin="0,0,8,0">
+                <ComboBoxItem Content="1"/>
+                <ComboBoxItem Content="2"/>
+                <ComboBoxItem Content="3"/>
+            </ComboBox>
+            <Button Name="BreakdownBtn" Padding="8,6" Margin="0,0,8,0" Click="BreakdownBtn_Click">Per-launcher breakdown</Button>
+
+            <Rectangle Width="12"/>
+            <TextBlock Text="Exclude paths:" VerticalAlignment="Center" Margin="8,0,4,0"/>
+            <TextBox Name="ExcludeTxt" Width="300" ToolTip="Semicolon-separated absolute paths to exclude" Margin="0,0,8,0"/>
+
+            <Button Name="AddCustomRootBtn" Padding="8,6" Margin="0,0,8,0" Click="AddCustomRootBtn_Click">Add custom root…</Button>
+
+            <Rectangle Width="12"/>
+            <CheckBox Name="ScheduleChk" Content="Schedule weekly clean (Sun 03:00)" Margin="8,0,8,0"
+                      Checked="ScheduleChk_Checked" Unchecked="ScheduleChk_Unchecked"/>
+            <TextBlock Name="ScheduleInfoTxt" Foreground="Gray" VerticalAlignment="Center" Margin="4,0,0,0"/>
+            <Button Name="ExportBtn" Padding="8,6" Margin="0,0,8,0" Click="ExportBtn_Click">Export Report</Button>
+        </StackPanel>
+
+        <!-- Main grid -->
+        <DataGrid Name="Grid" Grid.Row="1" AutoGenerateColumns="False" CanUserAddRows="False"
+                  Margin="0,12,0,12" IsReadOnly="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Category" Binding="{Binding Name}" Width="*"/>
+                <DataGridTextColumn Header="Path" Binding="{Binding Path}" Width="2*"/>
+                <DataGridTextColumn Header="Size" Binding="{Binding SizeFormatted}" Width="120"/>
+                <DataGridTextColumn Header="Files" Binding="{Binding FilesFormatted}" Width="100"/>
+                <DataGridTextColumn Binding="{Binding Status}" Width="140">
+                    <DataGridTextColumn.Header>
+                        <TextBlock Text="Status"
+                                   ToolTip="Meanings: Found — cache folder exists; Not initialized — cache not created yet; Not installed — related app/launcher absent; Not applicable — not relevant for your hardware or setup; Missing — path does not exist"/>
+                    </DataGridTextColumn.Header>
+                </DataGridTextColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- Footer -->
+        <DockPanel Grid.Row="2">
+            <TextBlock Name="SummaryTxt" DockPanel.Dock="Left" FontWeight="SemiBold" VerticalAlignment="Center"/>
+            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+                <TextBlock Text=" Author: CrestPoint Digital" Foreground="Gray" Margin="0,0,12,0" VerticalAlignment="Center"/>
+                <Button Name="HideToTrayBtn" Padding="8,4" Margin="0,0,0,0" Click="HideToTrayBtn_Click">Hide to tray</Button>
+            </StackPanel>
+        </DockPanel>
+    </Grid>
+</Window>

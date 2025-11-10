@@ -1,0 +1,22 @@
+<Window x:Class="GameCacheCleaner.UI.BreakdownWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Per-launcher breakdown"
+        Height="560" Width="820"
+        WindowStartupLocation="CenterOwner">
+    <DockPanel Margin="12">
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+            <TextBlock Text="Largest subfolders under key roots (Steam/Epic/UE/etc.)." Margin="0,0,12,0" VerticalAlignment="Center"/>
+            <Button Name="ScanBtn" Click="ScanBtn_Click" Padding="10,6" Margin="8,0,0,0">Scan</Button>
+        </StackPanel>
+        <ListView Name="List" Margin="0,8,0,0">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Root" Width="180" DisplayMemberBinding="{Binding Root}"/>
+                    <GridViewColumn Header="Subfolder" Width="420" DisplayMemberBinding="{Binding Subfolder}"/>
+                    <GridViewColumn Header="Size" Width="120" DisplayMemberBinding="{Binding SizeFormatted}"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+    </DockPanel>
+</Window>
