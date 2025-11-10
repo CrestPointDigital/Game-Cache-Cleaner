@@ -22,6 +22,7 @@ namespace GameCacheCleaner.UI
         public ObservableCollection<CacheItem> Items { get; } = new ObservableCollection<CacheItem>();
         private Forms.NotifyIcon? _tray;
         private bool _isClosingToTray = false;
+        private bool IsPro => LicenseService.ProEnabled;
 
         public MainWindow()
         {
@@ -35,6 +36,17 @@ namespace GameCacheCleaner.UI
             var args = Environment.GetCommandLineArgs();
             if (args.Any(a => string.Equals(a, "--auto-clean", StringComparison.OrdinalIgnoreCase)))
             {
+                if (!IsPro)
+                {
+                    WpfMessageBox.Show(this,
+                        "--auto-clean is a Pro feature.\nGet Pro for £5 (lifetime).",
+                        "Pro required",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+                    _isClosingToTray = true;
+                    System.Windows.Application.Current.Shutdown();
+                    return;
+                }
                 // Headless scheduled run
                 Dispatcher.InvokeAsync(async () =>
                 {
@@ -47,6 +59,38 @@ namespace GameCacheCleaner.UI
             }
             // Auto-analyze on normal startup so the grid fills immediately.
             Dispatcher.InvokeAsync(async () => await AnalyzeNow());
+        }
+
+        protected override void OnContentRendered(EventArgs e)
+        {
+            base.OnContentRendered(e);
+            ApplyProState();
+        }
+
+        private void ApplyProState()
+        {
+            // FREE stays enabled: AnalyzeBtn, CleanBtn, DryRunChk, ExcludeTxt, BreakdownBtn, ExportBtn (txt)
+            if (ScheduleChk != null) ScheduleChk.IsEnabled = IsPro;
+            if (AggressiveScanChk != null) AggressiveScanChk.IsEnabled = IsPro; // Cross-drive / deeper scans gated
+            // No trial messaging; Pro is enabled only when licensed.
+        }
+
+        private void RequirePro(string featureName)
+        {
+            var r = WpfMessageBox.Show(
+                this,
+                $"{featureName} is a Pro feature.\nGet Pro for £5 (lifetime).",
+                "Pro required",
+                MessageBoxButton.OKCancel,
+                MessageBoxImage.Information);
+            if (r == MessageBoxResult.OK)
+            {
+                try
+                {
+                    Process.Start(new ProcessStartInfo("https://your-buy-url.example") { UseShellExecute = true });
+                }
+                catch { }
+            }
         }
 
         private void PopulateRoots()
@@ -552,6 +596,12 @@ namespace GameCacheCleaner.UI
 
         private void AggressiveScanChk_Checked(object sender, RoutedEventArgs e)
         {
+            if (!IsPro)
+            {
+                AggressiveScanChk.IsChecked = false;
+                RequirePro("Cross-drive scanning");
+                return;
+            }
             PopulateRoots();
             Dispatcher.InvokeAsync(async () => await AnalyzeNow());
         }
@@ -694,8 +744,48 @@ namespace GameCacheCleaner.UI
             catch { ScheduleChk.IsChecked = false; }
         }
 
-        private void ScheduleChk_Checked(object sender, RoutedEventArgs e) { TryCreateWeeklyTask(); }
-        private void ScheduleChk_Unchecked(object sender, RoutedEventArgs e) { TryDeleteWeeklyTask(); }
+        private void ScheduleChk_Checked(object sender, RoutedEventArgs e)
+        {
+            if (!IsPro)
+            {
+                ScheduleChk.IsChecked = false;
+                RequirePro("Scheduler");
+                return;
+            }
+            TryCreateWeeklyTask();
+        }
+        private void ScheduleChk_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (!IsPro)
+            {
+                ScheduleChk.IsChecked = true;
+                RequirePro("Scheduler");
+                return;
+            }
+            TryDeleteWeeklyTask();
+        }
+
+        private void EnterLicenseBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var dlg = new LicensePromptWindow { Owner = this };
+            if (dlg.ShowDialog() == true)
+            {
+                if (string.IsNullOrWhiteSpace(dlg.LicenseToken))
+                {
+                    WpfMessageBox.Show(this, "Please paste a license token.", "Enter License", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+                if (LicenseService.Activate(dlg.LicenseToken))
+                {
+                    WpfMessageBox.Show(this, "Pro activated. Thank you!", "Activated", MessageBoxButton.OK, MessageBoxImage.Information);
+                    ApplyProState();
+                }
+                else
+                {
+                    WpfMessageBox.Show(this, "Invalid license.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+            }
+        }
 
         private void TryCreateWeeklyTask()
 {

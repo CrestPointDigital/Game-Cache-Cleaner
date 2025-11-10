@@ -1,7 +1,7 @@
 ; === Game Cache Cleaner Installer (Inno Setup) ===
 #define MyAppName "Game Cache Cleaner"
 #define MyAppPublisher "CrestPoint Digital"
-#define MyAppVersion "1.0.1"    ; <-- bump per release
+#define MyAppVersion "1.0.3"    ; <-- bump per release
 #define MyAppExeName "GameCacheCleaner.UI.exe"
 #define PublishDir "..\\GameCacheCleaner.UI\\bin\\Release\\net8.0-windows\\win-x64\\publish"
 ; Output filename with version
@@ -23,15 +23,19 @@ DisableProgramGroupPage=yes
 ArchitecturesInstallIn64BitMode=x64compatible
 ArchitecturesAllowed=x64compatible
 PrivilegesRequired=lowest
-SetupIconFile={#PublishDir}\\Assets\\crestpoint.ico
+SetupIconFile=..\\GameCacheCleaner.UI\\Assets\\crestpoint.ico
 UninstallDisplayIcon={app}\\Assets\\crestpoint.ico
 WizardStyle=modern
+LicenseFile=LICENSE.txt
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Files]
+; Include published single-file EXE and any supporting files
 Source: "{#PublishDir}\\*"; DestDir: "{app}"; Flags: recursesubdirs createallsubdirs ignoreversion
+; Ensure icon is available at runtime for tray/window (site-of-origin path)
+Source: "..\\GameCacheCleaner.UI\\Assets\\crestpoint.ico"; DestDir: "{app}\\Assets"; Flags: ignoreversion
 
 [Icons]
 Name: "{autoprograms}\\{#MyAppName}"; Filename: "{app}\\{#MyAppExeName}"; IconFilename: "{app}\\Assets\\crestpoint.ico"

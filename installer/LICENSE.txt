@@ -1,0 +1,30 @@
+Game Cache Cleaner - End-User License Agreement (EULA)
+
+Copyright (c) CrestPoint Digital. All rights reserved.
+
+By installing or using Game Cache Cleaner (the "Software"), you agree to the
+terms of this End-User License Agreement. If you do not agree, do not install
+or use the Software.
+
+1. License. You are granted a non-exclusive, non-transferable license to install
+   and use the Software on devices you own or control for personal or internal
+   business use.
+
+2. Restrictions. You may not reverse engineer, decompile, or disassemble the
+   Software, nor distribute it for a fee without written permission from
+   CrestPoint Digital.
+
+3. Data and Privacy. The Software does not collect, transmit, or store personal
+   data beyond what is necessary for operation on your device.
+
+4. Disclaimer. The Software is provided "as is" without warranties of any kind.
+   CrestPoint Digital is not liable for any damages arising from its use.
+
+5. Support. Best-effort support may be provided. No guarantee of availability.
+
+6. Updates. CrestPoint Digital may provide updates at its discretion.
+
+7. Termination. This license terminates if you breach these terms. Upon
+   termination, you must uninstall and cease using the Software.
+
+For questions, contact: support@crestpoint.digital
