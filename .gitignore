@@ -15,8 +15,8 @@ GameCacheCleaner.UI/bin/
 GameCacheCleaner.UI/obj/
 GameCacheCleaner_UI_Release/
 GameCacheCleaner_UI_Release.zip
+GameCacheCleaner_Setup*.exe
 
 ## Installer temp/logs
 installer/*.tmp
 publish_selfcontained.ps1.log
-
