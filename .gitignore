@@ -20,3 +20,15 @@ GameCacheCleaner_Setup*.exe
 ## Installer temp/logs
 installer/*.tmp
 publish_selfcontained.ps1.log
+
+# Root-level ignores (global)
+**/bin/
+**/obj/
+**/publish/
+*.exe
+*.msi
+*.zip
+*.pdb
+*.user
+.vs/
+.vscode/

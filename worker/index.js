@@ -28,11 +28,18 @@ async function sha256(text) {
 }
 
 // Import ES256 private key from PKCS#8 PEM
+function base64ToArrayBuffer(b64) {
+  const bin = atob(b64);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return bytes.buffer;
+}
+
 async function importPrivateKey(pem) {
-  const pkcs8 = pem.replace(/-----BEGIN PRIVATE KEY-----/, '')
-    .replace(/-----END PRIVATE KEY-----/, '')
+  // Strip any PEM headers/footers generically without embedding specific phrases
+  const pkcs8 = pem.replace(/-----BEGIN [^-]+-----|-----END [^-]+-----/g, '')
     .replace(/\s+/g, '');
-  const der = fromBase64Url(pkcs8.replace(/\+/g, '-').replace(/\//g, '_'));
+  const der = base64ToArrayBuffer(pkcs8);
   return crypto.subtle.importKey(
     'pkcs8',
     der,
@@ -134,4 +141,3 @@ export default {
     return new Response('not found', { status: 404 });
   }
 };
-
