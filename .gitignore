@@ -32,3 +32,14 @@ publish_selfcontained.ps1.log
 *.user
 .vs/
 .vscode/
+node_modules/
+*.ide/
+
+# Keys/secrets (never commit)
+*.pem
+*.pfx
+*.cer
+*.pub
+
+# Keep public key tracked explicitly
+!GameCacheCleaner.UI/Assets/public.pem
