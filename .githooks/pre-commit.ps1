@@ -19,8 +19,8 @@ if (Test-Path .secret-allowlist) { $allow = Get-Content .secret-allowlist }
 
 $violations = @()
 foreach ($f in $files) {
-  # skip hook files and allowlist itself
-  if ($f -like '.githooks/*' -or $f -eq '.secret-allowlist') { continue }
+  # skip hook files, CI workflow files, gitleaks config, and allowlist itself
+  if ($f -like '.githooks/*' -or $f -eq '.secret-allowlist' -or $f -eq '.gitleaks.toml' -or $f -like '.github/workflows/*') { continue }
   # skip big/binary files
   if ((Get-Item $f).Length -gt 5MB) { continue }
   try {

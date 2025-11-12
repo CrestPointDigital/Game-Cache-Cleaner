@@ -1,0 +1,26 @@
+title = "gcc rules"
+
+[[rules]]
+id = "stripe-secret-key"
+description = "Stripe sk_ key"
+regex = '''sk_(test|live)_[0-9A-Za-z]{20,}'''
+
+[[rules]]
+id = "stripe-webhook-secret"
+description = "Stripe whsec"
+regex = '''whsec_[0-9A-Za-z]{20,}'''
+
+[[rules]]
+id = "private-key"
+description = "Any PEM private key"
+regex = '''-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----'''
+
+[[rules]]
+id = "github-pat"
+description = "GitHub PAT"
+regex = '''ghp_[0-9A-Za-z]{30,}'''
+
+[[rules]]
+id = "aws-secret"
+description = "AWS secret"
+regex = '''aws_secret_access_key\s*=\s*[A-Za-z0-9/+=]{30,}'''

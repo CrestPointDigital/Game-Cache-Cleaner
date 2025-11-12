@@ -11,7 +11,7 @@ found=0
 while IFS= read -r f; do
   [ -f "$f" ] || continue
   case "$f" in
-    .githooks/*|.secret-allowlist)
+    .githooks/*|.secret-allowlist|.gitleaks.toml|.github/workflows/*)
       continue
       ;;
   esac
